@@ -1,0 +1,35 @@
+import time
+from twilio.rest import Client
+from twilio.base.exceptions import TwilioRestException
+
+# Twilio hesabınıza ait bilgiler
+account_sid = 'YOUR_TWILIO_ACCOUNT_SID'
+auth_token = 'YOUR_TWILIO_AUTH_TOKEN'
+client = Client(account_sid, auth_token)
+
+# Arama yapılacak ve arama yapılacak numaralar
+from_number = 'SİZİN TWİLİO TELEFON NONUZ'
+to_number = 'HEDEF TELEFON NO'
+
+def make_call(client, from_number, to_number):
+    try:
+        call = client.calls.create(
+            to=to_number,
+            from_=from_number,
+            url='http://demo.twilio.com/docs/voice.xml'
+        )
+        print(f"Call made with SID: {call.sid}. Status: {call.status}")
+        return True
+    except TwilioRestException as e:
+        print(f"Error making the call: {e}")
+        return False
+
+# 10 kez arama yap
+successful_calls = 0
+for _ in range(10):
+    if make_call(client, from_number, to_number):
+        successful_calls += 1
+    time.sleep(5)  # 5 saniye bekleme süresi
+
+print(f"{successful_calls} out of 10 calls were successful.")
+
